@@ -21,9 +21,9 @@ fn display_message_box(message: &[u16], title: PCWSTR) -> Result<(), Error> {
     let lptext = PCWSTR(message.as_ptr());
     let style = MB_OK | MB_ICONINFORMATION;
 
-    let mb_result = unsafe { MessageBoxW(None, lptext, title, style) };
+    let result = unsafe { MessageBoxW(None, lptext, title, style) };
 
-    match mb_result {
+    match result {
         MESSAGEBOX_RESULT(0) => Err(Error::from_win32()),
         _ => Ok(()),
     }
