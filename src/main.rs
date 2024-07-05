@@ -16,6 +16,19 @@ fn attempt_dpi_awareness() {
     }
 }
 
+/// Shows an informational message box.
+fn display_message_box(message: &[u16], title: PCWSTR) -> Result<(), Error> {
+    let lptext = PCWSTR(message.as_ptr());
+    let style = MB_OK | MB_ICONINFORMATION;
+
+    let mb_result = unsafe { MessageBoxW(None, lptext, title, style) };
+
+    match mb_result {
+        MESSAGEBOX_RESULT(0) => Err(Error::from_win32()),
+        _ => Ok(()),
+    }
+}
+
 fn main() -> Result<(), Error> {
     attempt_dpi_awareness();
 
@@ -30,18 +43,5 @@ fn main() -> Result<(), Error> {
         .chain(std::iter::once(0))
         .collect();
 
-    let mb_result = unsafe {
-        MessageBoxW(
-            None,
-            PCWSTR(message.as_ptr()),
-            w!("Command-line arguments"),
-            MB_OK | MB_ICONINFORMATION,
-        )
-    };
-
-    if mb_result == MESSAGEBOX_RESULT(0) {
-        Err(Error::from_win32())
-    } else {
-        Ok(())
-    }
+    display_message_box(&message, w!("Command-line arguments"))
 }
