@@ -1,9 +1,8 @@
 //! Displays numbered command-line arguments in a Windows dialog box.
 
 use windows::{
-    core::{s, w, Error, PCWSTR},
+    core::{w, Error, PCWSTR},
     Win32::System::Com::{CoInitializeEx, COINIT_APARTMENTTHREADED},
-    Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW},
     Win32::UI::Controls::{
         InitCommonControlsEx, TaskDialog, ICC_STANDARD_CLASSES, INITCOMMONCONTROLSEX,
         TDCBF_CLOSE_BUTTON, TD_INFORMATION_ICON,
@@ -58,14 +57,6 @@ fn display_task_dialog(
 }
 
 fn main() -> Result<(), Error> {
-    unsafe {
-        let comctl32 = LoadLibraryW(w!("comctl32.dll"))?;
-        match GetProcAddress(comctl32, s!("TaskDialog")) {
-            Some(address) => eprintln!("Got TaskDialog address in comctl32.dll: {address:?}"),
-            None => eprintln!("TaskDialog function not found in comctl32.dll"),
-        }
-    }
-
     initialize_com().expect("initializing COM should succeed");
     initialize_common_controls();
 
