@@ -2,11 +2,23 @@
 
 use windows::{
     core::{w, Error, PCWSTR},
+    Win32::System::Com::{CoInitializeEx, COINIT_APARTMENTTHREADED},
     Win32::UI::Controls::{
         InitCommonControlsEx, TaskDialog, ICC_STANDARD_CLASSES, INITCOMMONCONTROLSEX,
         TDCBF_CLOSE_BUTTON, TD_INFORMATION_ICON,
     },
 };
+
+/// Allow COM functionality to be used on this thread.
+/// FIXME: This needs a matching CoUninitialize() call!
+fn initialize_com() -> Result<(), Error> {
+    let result = unsafe { CoInitializeEx(None, COINIT_APARTMENTTHREADED) };
+    if result.is_err() {
+        Err(Error::from_hresult(result))
+    } else {
+        Ok(())
+    }
+}
 
 /// Performs initialization needed to create common controls such as task dialogs.
 fn initialize_common_controls() {
@@ -45,6 +57,7 @@ fn display_task_dialog(
 }
 
 fn main() -> Result<(), Error> {
+    initialize_com().expect("initializing COM should succeed");
     initialize_common_controls();
 
     let lines: Vec<String> = std::env::args()
