@@ -1,9 +1,9 @@
 //! Displays numbered command-line arguments in a Windows dialog box.
 
 use windows::{
-    core::{w, Error, PCWSTR},
+    core::{s, w, Error, PCWSTR},
     Win32::System::Com::{CoInitializeEx, COINIT_APARTMENTTHREADED},
-    Win32::System::LibraryLoader::LoadLibraryW,
+    Win32::System::LibraryLoader::{GetProcAddress, LoadLibraryW},
     Win32::UI::Controls::{
         InitCommonControlsEx, TaskDialog, ICC_STANDARD_CLASSES, INITCOMMONCONTROLSEX,
         TDCBF_CLOSE_BUTTON, TD_INFORMATION_ICON,
@@ -59,11 +59,15 @@ fn display_task_dialog(
 
 fn main() -> Result<(), Error> {
     unsafe {
-        LoadLibraryW(w!("ComCtl32.dll")).expect("need COM dll");
+        let comctl32 = LoadLibraryW(w!("comctl32.dll"))?;
+        match GetProcAddress(comctl32, s!("TaskDialog")) {
+            Some(address) => eprintln!("Got TaskDialog address in comctl32.dll: {address:?}"),
+            None => eprintln!("TaskDialog function not found in comctl32.dll"),
+        }
     }
 
     initialize_com().expect("initializing COM should succeed");
-    initialize_common_controls();
+    //initialize_common_controls();
 
     let lines: Vec<String> = std::env::args()
         .enumerate()
@@ -76,9 +80,11 @@ fn main() -> Result<(), Error> {
         .chain(std::iter::once(0))
         .collect();
 
-    display_task_dialog(
-        w!("showargsw"),
-        w!("The following command-line arguments were passed."),
-        &content,
-    )
+    // display_task_dialog(
+    //     w!("showargsw"),
+    //     w!("The following command-line arguments were passed."),
+    //     &content,
+    // )
+
+    Ok(())
 }
