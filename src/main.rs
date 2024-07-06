@@ -3,6 +3,7 @@
 use windows::{
     core::{w, Error, PCWSTR},
     Win32::System::Com::{CoInitializeEx, COINIT_APARTMENTTHREADED},
+    Win32::System::LibraryLoader::LoadLibraryW,
     Win32::UI::Controls::{
         InitCommonControlsEx, TaskDialog, ICC_STANDARD_CLASSES, INITCOMMONCONTROLSEX,
         TDCBF_CLOSE_BUTTON, TD_INFORMATION_ICON,
@@ -57,6 +58,10 @@ fn display_task_dialog(
 }
 
 fn main() -> Result<(), Error> {
+    unsafe {
+        LoadLibraryW(w!("ComCtl32.dll")).expect("need COM dll");
+    }
+
     initialize_com().expect("initializing COM should succeed");
     initialize_common_controls();
 
@@ -71,11 +76,9 @@ fn main() -> Result<(), Error> {
         .chain(std::iter::once(0))
         .collect();
 
-    // display_task_dialog(
-    //     w!("showargsw"),
-    //     w!("The following command-line arguments were passed."),
-    //     &content,
-    // )
-
-    Ok(())
+    display_task_dialog(
+        w!("showargsw"),
+        w!("The following command-line arguments were passed."),
+        &content,
+    )
 }
