@@ -60,9 +60,9 @@ fn display_task_dialog(
 fn main() -> Result<(), Error> {
     unsafe {
         let comctl32 = LoadLibraryW(w!("comctl32.dll"))?;
-        match GetProcAddress(comctl32, s!("TaskDialog")) {
-            Some(address) => eprintln!("Got TaskDialog address in comctl32.dll: {address:?}"),
-            None => eprintln!("TaskDialog function not found in comctl32.dll"),
+        match GetProcAddress(comctl32, s!("TaskDialogEx")) {
+            Some(address) => eprintln!("Got TaskDialogEx address in comctl32.dll: {address:?}"),
+            None => eprintln!("TaskDialogEx function not found in comctl32.dll"),
         }
     }
 
