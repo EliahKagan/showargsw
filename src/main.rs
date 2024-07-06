@@ -71,9 +71,11 @@ fn main() -> Result<(), Error> {
         .chain(std::iter::once(0))
         .collect();
 
-    display_task_dialog(
-        w!("showargsw"),
-        w!("The following command-line arguments were passed."),
-        &content,
-    )
+    // display_task_dialog(
+    //     w!("showargsw"),
+    //     w!("The following command-line arguments were passed."),
+    //     &content,
+    // )
+
+    Ok(())
 }
