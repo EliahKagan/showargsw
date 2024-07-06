@@ -11,3 +11,9 @@ features = [
     "Win32_UI_Controls",
     "Win32_UI_WindowsAndMessaging",
 ]
+
+[build-dependencies]
+winres = "0.1.12"
+
+[package.metadata.winres]
+manifest = "app.manifest"

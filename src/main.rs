@@ -67,7 +67,7 @@ fn main() -> Result<(), Error> {
     }
 
     initialize_com().expect("initializing COM should succeed");
-    //initialize_common_controls();
+    initialize_common_controls();
 
     let lines: Vec<String> = std::env::args()
         .enumerate()
@@ -80,11 +80,9 @@ fn main() -> Result<(), Error> {
         .chain(std::iter::once(0))
         .collect();
 
-    // display_task_dialog(
-    //     w!("showargsw"),
-    //     w!("The following command-line arguments were passed."),
-    //     &content,
-    // )
-
-    Ok(())
+    display_task_dialog(
+        w!("showargsw"),
+        w!("The following command-line arguments were passed."),
+        &content,
+    )
 }
