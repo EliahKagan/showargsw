@@ -7,6 +7,23 @@ use windows::{
     },
 };
 
+fn main() -> Result<(), Error> {
+    attempt_dpi_awareness();
+
+    let lines: Vec<String> = std::env::args()
+        .enumerate()
+        .map(|(i, arg)| format!("{i}: [{arg}]"))
+        .collect();
+
+    let message: Vec<u16> = lines
+        .join("\n")
+        .encode_utf16()
+        .chain(std::iter::once(0))
+        .collect();
+
+    display_message_box(&message, w!("Command-line arguments"))
+}
+
 /// The text may still be too small, but this at least keeps it from being blurry.
 fn attempt_dpi_awareness() {
     let dpi_aware = unsafe { SetProcessDPIAware() };
@@ -27,21 +44,4 @@ fn display_message_box(message: &[u16], title: PCWSTR) -> Result<(), Error> {
         MESSAGEBOX_RESULT(0) => Err(Error::from_win32()),
         _ => Ok(()),
     }
-}
-
-fn main() -> Result<(), Error> {
-    attempt_dpi_awareness();
-
-    let lines: Vec<String> = std::env::args()
-        .enumerate()
-        .map(|(i, arg)| format!("{i}: [{arg}]"))
-        .collect();
-
-    let message: Vec<u16> = lines
-        .join("\n")
-        .encode_utf16()
-        .chain(std::iter::once(0))
-        .collect();
-
-    display_message_box(&message, w!("Command-line arguments"))
 }
