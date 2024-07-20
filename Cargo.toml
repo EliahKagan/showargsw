@@ -10,7 +10,7 @@ features = [
 ]
 
 [build-dependencies]
-winres = "0.1.12"
+winresource = "0.1.17"
 
-[package.metadata.winres]
+[package.metadata.winresource]
 manifest = "app.manifest"
