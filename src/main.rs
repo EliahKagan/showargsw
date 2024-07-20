@@ -2,14 +2,10 @@
 
 use windows::{
     core::{h, Error, HSTRING},
-    Win32::UI::WindowsAndMessaging::{
-        MessageBoxW, SetProcessDPIAware, MB_ICONINFORMATION, MB_OK, MESSAGEBOX_RESULT,
-    },
+    Win32::UI::WindowsAndMessaging::{MessageBoxW, MB_ICONINFORMATION, MB_OK, MESSAGEBOX_RESULT},
 };
 
 fn main() -> Result<(), Error> {
-    attempt_dpi_awareness();
-
     let text = std::env::args()
         .enumerate()
         .map(|(i, arg)| format!("{i}: [{arg}]"))
@@ -17,14 +13,6 @@ fn main() -> Result<(), Error> {
         .join("\n");
 
     display_message_box(&text.into(), h!("Command-line arguments"))
-}
-
-/// The text may still be too small, but this at least keeps it from being blurry.
-fn attempt_dpi_awareness() {
-    let dpi_aware = unsafe { SetProcessDPIAware() };
-    if !dpi_aware.as_bool() {
-        eprintln!("Couldn't respect display scaling!");
-    }
 }
 
 /// Shows an informational message box.
